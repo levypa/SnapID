@@ -35,7 +35,83 @@ cp .env.example .env
 npm start
 ```
 
-## 🌐 Deploy em VPS
+## 🐳 Deploy com Docker (Recomendado)
+
+### Início Rápido
+
+```bash
+# Clone o repositório
+git clone https://github.com/levypa/snapid.git
+cd snapid
+
+# Inicie tudo (app + MongoDB)
+docker compose up -d
+```
+
+A aplicação estará disponível em `http://localhost:3000`
+
+### Comandos Docker
+
+```bash
+# Iniciar containers
+docker compose up -d
+
+# Ver logs em tempo real
+docker compose logs -f
+
+# Ver logs apenas da aplicação
+docker compose logs -f app
+
+# Parar containers
+docker compose down
+
+# Parar e remover volumes (⚠️ apaga dados)
+docker compose down -v
+
+# Rebuild após mudanças no código
+docker compose up -d --build
+
+# Ver status dos containers
+docker compose ps
+```
+
+### Configuração de Produção
+
+1. Crie um arquivo `.env` na raiz do projeto:
+
+```env
+PORT=3000
+BASE_URL=https://seudominio.com
+```
+
+2. Para produção com domínio próprio, use com Nginx/Traefik como reverse proxy.
+
+### Estrutura Docker
+
+| Container | Porta | Descrição |
+|-----------|-------|-----------|
+| `snapid-app` | 3000 | Aplicação Node.js |
+| `snapid-mongo` | 27017 | Banco de dados MongoDB |
+
+### Volumes Persistentes
+
+- `snapid_uploads_data` - Imagens enviadas
+- `snapid_mongo_data` - Dados do MongoDB
+
+```bash
+# Ver volumes
+docker volume ls | grep snapid
+
+# Backup do MongoDB
+docker exec snapid-mongo mongodump --out /data/backup
+
+# Copiar backup para host
+docker cp snapid-mongo:/data/backup ./backup
+```
+
+---
+
+## 🌐 Deploy em VPS (Manual)
 
 ### 1. Preparar o Servidor (Ubuntu/Debian)
 

@@ -1,0 +1,51 @@
+# SnapID - Docker Compose
+# Inicia a aplicação e o MongoDB
+
+services:
+  # Aplicação SnapID
+  app:
+    build: .
+    container_name: snapid-app
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MONGO_URI=mongodb://mongo:27017/snapid
+      - BASE_URL=${BASE_URL:-http://localhost:3000}
+    volumes:
+      - uploads_data:/app/uploads
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - snapid-network
+
+  # MongoDB
+  mongo:
+    image: mongo:7
+    container_name: snapid-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - snapid-network
+
+volumes:
+  uploads_data:
+    driver: local
+  mongo_data:
+    driver: local
+
+networks:
+  snapid-network:
+    driver: bridge
