@@ -1,0 +1,32 @@
+{
+  "name": "snapid",
+  "version": "1.0.0",
+  "description": "SnapID - API minimalista para hospedagem de imagens",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "image",
+    "hosting",
+    "api",
+    "upload"
+  ],
+  "author": "LevyPA",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "form-data": "^4.0.5",
+    "mongoose": "^8.20.2",
+    "multer": "^2.0.2",
+    "node-cron": "^4.2.1",
+    "node-fetch": "^3.3.2",
+    "uuid": "^13.0.0"
+  }
+}

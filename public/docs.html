@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação da API - SnapID</title>
+    <link rel="icon" href="https://opengptx.com.br/wp-content/uploads/2025/03/cropped-logo-ico-e1741383241280-32x32.png"
+        sizes="32x32" />
+    <style>
+        body {
+            font-family: monospace;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f4f4f4;
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        h1 {
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            margin-top: 30px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        pre {
+            background: #fff;
+            padding: 15px;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+
+        .endpoint {
+            font-weight: bold;
+            color: #0056b3;
+        }
+
+        .method {
+            font-weight: bold;
+            color: #d63384;
+        }
+
+        .nav {
+            margin-bottom: 20px;
+        }
+
+        .nav a {
+            margin-right: 15px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #f0f0f0;
+        }
+
+        .param-required {
+            color: #d63384;
+            font-weight: bold;
+        }
+
+        .param-optional {
+            color: #6c757d;
+        }
+
+        .summary {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+
+        .summary h3 {
+            margin-top: 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            border-top: 1px solid #ccc;
+            margin-top: 40px;
+            color: #636e72;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: #0984e3;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <div class="nav">
+            <a href="/">← Voltar para o App</a>
+        </div>
+
+        <h1>API SnapID</h1>
+        <p>Uma API minimalista para hospedagem de imagens.</p>
+
+        <div class="summary">
+            <h3>📋 Resumo dos Endpoints</h3>
+            <table>
+                <tr>
+                    <th>Método</th>
+                    <th>Endpoint</th>
+                    <th>Descrição</th>
+                </tr>
+                <tr>
+                    <td><span class="method">POST</span></td>
+                    <td><span class="endpoint">/api/key</span></td>
+                    <td>Gerar nova Chave de API</td>
+                </tr>
+                <tr>
+                    <td><span class="method">POST</span></td>
+                    <td><span class="endpoint">/upload</span></td>
+                    <td>Enviar imagem</td>
+                </tr>
+                <tr>
+                    <td><span class="method">GET</span></td>
+                    <td><span class="endpoint">/api/my-images</span></td>
+                    <td>Listar minhas imagens</td>
+                </tr>
+                <tr>
+                    <td><span class="method">GET</span></td>
+                    <td><span class="endpoint">/image/:id</span></td>
+                    <td>Obter detalhes de uma imagem</td>
+                </tr>
+                <tr>
+                    <td><span class="method">DELETE</span></td>
+                    <td><span class="endpoint">/image/:id</span></td>
+                    <td>Excluir uma imagem</td>
+                </tr>
+            </table>
+        </div>
+
+        <h2>1. Autenticação - Gerar Chave de API</h2>
+        <p>Obtenha uma Chave de API para começar a enviar imagens. A chave é um UUID único que identifica você no
+            sistema.</p>
+        <p><span class="method">POST</span> <span class="endpoint">/api/key</span></p>
+
+        <p><strong>Exemplo de requisição:</strong></p>
+        <pre>
+curl -X POST http://localhost:3000/api/key
+        </pre>
+
+        <p><strong>Resposta de sucesso (200):</strong></p>
+        <pre>
+{
+  "success": true,
+  "apiKey": "550e8400-e29b-41d4-a716-446655440000"
+}
+        </pre>
+
+        <h2>2. Enviar Imagem</h2>
+        <p>Envie um arquivo de imagem (multipart/form-data). Suporta: JPEG, JPG, PNG, GIF, WEBP. Limite: 5MB.</p>
+        <p><span class="method">POST</span> <span class="endpoint">/upload</span></p>
+
+        <p><strong>Parâmetros:</strong></p>
+        <table>
+            <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Descrição</th>
+            </tr>
+            <tr>
+                <td>key</td>
+                <td><span class="param-required">obrigatório</span></td>
+                <td>Sua Chave de API (query param ou form field)</td>
+            </tr>
+            <tr>
+                <td>image</td>
+                <td><span class="param-required">obrigatório</span></td>
+                <td>Arquivo de imagem a ser enviado</td>
+            </tr>
+            <tr>
+                <td>expiration</td>
+                <td><span class="param-optional">opcional</span></td>
+                <td>Segundos até a expiração automática da imagem</td>
+            </tr>
+        </table>
+
+        <p><strong>Exemplo de requisição:</strong></p>
+        <pre>
+curl -X POST \
+  -F "image=@/caminho/para/imagem.jpg" \
+  -F "expiration=3600" \
+  "http://localhost:3000/upload?key=SUA_CHAVE_API"
+        </pre>
+
+        <p><strong>Resposta de sucesso (200):</strong></p>
+        <pre>
+{
+  "success": true,
+  "data": {
+    "id": "675328ab1234567890abcdef",
+    "title": "imagem.jpg",
+    "url": "http://localhost:3000/uploads/1733489835123-456789.jpg",
+    "delete_url": "http://localhost:3000/image/1733489835123-456789.jpg/delete",
+    "expiration": 3600
+  }
+}
+        </pre>
+
+        <h2>3. Listar Minhas Imagens</h2>
+        <p>Retorna todas as imagens enviadas com sua Chave de API.</p>
+        <p><span class="method">GET</span> <span class="endpoint">/api/my-images</span></p>
+
+        <p><strong>Parâmetros:</strong></p>
+        <table>
+            <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Descrição</th>
+            </tr>
+            <tr>
+                <td>key</td>
+                <td><span class="param-required">obrigatório</span></td>
+                <td>Sua Chave de API (query param)</td>
+            </tr>
+        </table>
+
+        <p><strong>Exemplo de requisição:</strong></p>
+        <pre>
+curl "http://localhost:3000/api/my-images?key=SUA_CHAVE_API"
+        </pre>
+
+        <p><strong>Resposta de sucesso (200):</strong></p>
+        <pre>
+{
+  "success": true,
+  "count": 2,
+  "data": [
+    {
+      "id": "675328ab1234567890abcdef",
+      "title": "foto1.jpg",
+      "url": "http://localhost:3000/uploads/1733489835123-456789.jpg",
+      "date": "2024-12-06T10:30:00.000Z",
+      "expiration": null
+    },
+    {
+      "id": "675328cd1234567890abcdef",
+      "title": "foto2.png",
+      "url": "http://localhost:3000/uploads/1733489900456-123456.png",
+      "date": "2024-12-06T10:35:00.000Z",
+      "expiration": "2024-12-06T11:35:00.000Z"
+    }
+  ]
+}
+        </pre>
+
+        <p><strong>Resposta de erro (401):</strong></p>
+        <pre>
+{
+  "success": false,
+  "error": "API Key required"
+}
+        </pre>
+        <pre>
+{
+  "success": false,
+  "error": "Invalid API Key"
+}
+        </pre>
+
+        <h2>4. Obter Detalhes da Imagem</h2>
+        <p>Recupera os metadados de uma imagem específica pelo ID ou nome do arquivo.</p>
+        <p><span class="method">GET</span> <span class="endpoint">/image/:id_ou_nome_arquivo</span></p>
+
+        <p><strong>Exemplo de requisição:</strong></p>
+        <pre>
+curl http://localhost:3000/image/675328ab1234567890abcdef
+        </pre>
+        <p>ou pelo nome do arquivo:</p>
+        <pre>
+curl http://localhost:3000/image/1733489835123-456789.jpg
+        </pre>
+
+        <p><strong>Resposta de sucesso (200):</strong></p>
+        <pre>
+{
+  "success": true,
+  "data": {
+    "id": "675328ab1234567890abcdef",
+    "title": "imagem.jpg",
+    "url": "http://localhost:3000/uploads/1733489835123-456789.jpg",
+    "date": "2024-12-06T10:30:00.000Z",
+    "expiration": null
+  }
+}
+        </pre>
+
+        <h2>5. Excluir Imagem</h2>
+        <p>Exclui uma imagem permanentemente. Requer a Chave de API do usuário que fez o upload.</p>
+        <p><span class="method">DELETE</span> <span class="endpoint">/image/:id_ou_nome_arquivo</span></p>
+
+        <p><strong>Parâmetros:</strong></p>
+        <table>
+            <tr>
+                <th>Nome</th>
+                <th>Tipo</th>
+                <th>Descrição</th>
+            </tr>
+            <tr>
+                <td>key</td>
+                <td><span class="param-required">obrigatório</span></td>
+                <td>Sua Chave de API (query param)</td>
+            </tr>
+        </table>
+
+        <p><strong>Exemplo de requisição:</strong></p>
+        <pre>
+curl -X DELETE "http://localhost:3000/image/675328ab1234567890abcdef?key=SUA_CHAVE_API"
+        </pre>
+
+        <p><strong>Resposta de sucesso (200):</strong></p>
+        <pre>
+{
+  "success": true,
+  "message": "Image deleted"
+}
+        </pre>
+
+        <p><strong>Resposta de erro (403):</strong></p>
+        <pre>
+{
+  "success": false,
+  "error": "Unauthorized: You did not upload this image"
+}
+        </pre>
+
+        <h2>Códigos de Erro</h2>
+        <table>
+            <tr>
+                <th>Código</th>
+                <th>Descrição</th>
+            </tr>
+            <tr>
+                <td>400</td>
+                <td>Requisição inválida (ex: nenhuma imagem enviada)</td>
+            </tr>
+            <tr>
+                <td>401</td>
+                <td>Não autenticado (API Key ausente ou inválida)</td>
+            </tr>
+            <tr>
+                <td>403</td>
+                <td>Não autorizado (não é dono da imagem)</td>
+            </tr>
+            <tr>
+                <td>404</td>
+                <td>Imagem não encontrada</td>
+            </tr>
+            <tr>
+                <td>500</td>
+                <td>Erro interno do servidor</td>
+            </tr>
+        </table>
+    </div>
+
+    <footer>
+        <p>© 2026 <strong>LevyPA®</strong> | <a href="https://opengptx.com.br" target="_blank">opengptx.com.br</a></p>
+    </footer>
+
+</body>
+
+</html>
