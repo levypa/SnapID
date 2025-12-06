@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+test_*.jpg
+test_*.txt
+test_*.png
+
+# Docker files (não copiar para dentro da imagem)
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Uploads locais (o volume será montado)
+uploads/*
+!uploads/.gitkeep
+
+# Documentação não necessária
+*.md
